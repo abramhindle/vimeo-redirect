@@ -22,14 +22,12 @@ my $cgi = CGI->new();
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-my $full_url      = $cgi->url();
-my $VIMEO_ID=$full_url;
-($VIMEO_ID) = ($VIMEO_ID =~ /^http\:\/\/vimeo\.com\.*(\d+)$/);
-
-
+my $full_url      = $cgi->url(-path_info=>1,-query=>1);
+#my ($VIMEO_ID) = ($full_url =~ /vimeo\.com.*(\d+)$/);
+my ($VIMEO_ID) = ($full_url =~ /(\d+)$/);
 my $VIDEO_XML=get("http://www.vimeo.com/moogaloop/load/clip:${VIMEO_ID}");
 
-my ($REQUEST_SIGNATURE) = ($VIDEO_XML =~ /^.*<request_signature>([^<]*)<.*$/);
-my ($REQUEST_SIGNATURE_EXPIRES) = ($VIDEO_XML =~ /^.*<request_signature_expires>([^<]*)<.*$/);
+my ($REQUEST_SIGNATURE) = ($VIDEO_XML =~ /<request_signature>([^<]*)</);
+my ($REQUEST_SIGNATURE_EXPIRES) = ($VIDEO_XML =~ /<request_signature_expires>([^<]*)</);
 my $url = "http://www.vimeo.com/moogaloop/play/clip:${VIMEO_ID}/${REQUEST_SIGNATURE}/${REQUEST_SIGNATURE_EXPIRES}/?q=sd";
 print $cgi->redirect($url);

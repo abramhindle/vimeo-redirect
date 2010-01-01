@@ -24,7 +24,7 @@ my $cgi = CGI->new();
 
 my $full_url      = $cgi->url();
 my $VIMEO_ID=$full_url;
-($VIMEO_ID) = ($VIMEO_ID =~ /^http://vimeo\.com\.*(\d+)$/);
+($VIMEO_ID) = ($VIMEO_ID =~ /^http\:\/\/vimeo\.com\.*(\d+)$/);
 
 
 my $VIDEO_XML=get("http://www.vimeo.com/moogaloop/load/clip:${VIMEO_ID}");
@@ -32,4 +32,4 @@ my $VIDEO_XML=get("http://www.vimeo.com/moogaloop/load/clip:${VIMEO_ID}");
 my ($REQUEST_SIGNATURE) = ($VIDEO_XML =~ /^.*<request_signature>([^<]*)<.*$/);
 my ($REQUEST_SIGNATURE_EXPIRES) = ($VIDEO_XML =~ /^.*<request_signature_expires>([^<]*)<.*$/);
 my $url = "http://www.vimeo.com/moogaloop/play/clip:${VIMEO_ID}/${REQUEST_SIGNATURE}/${REQUEST_SIGNATURE_EXPIRES}/?q=sd";
-print redirect($url);
+print $cgi->redirect($url);
